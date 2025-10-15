@@ -1238,3 +1238,474 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_state = "/obj/item/vape/white"
 	greyscale_colors = "#DCDCDC"
 	flags_1 = NONE
+
+#define VAPE_COMPONENT_SLOT_COIL "coil"
+#define VAPE_COMPONENT_SLOT_CAPACITOR "capacitor"
+#define VAPE_COMPONENT_SLOT_ADDON "addon"
+
+#define VAPE_SPECIAL_AFTERBURNER (1<<0)
+#define VAPE_SPECIAL_TURBOFAN (1<<1)
+
+/proc/vape_get_slot_label(slot)
+	var/static/list/labels = list(
+		VAPE_COMPONENT_SLOT_COIL = "coil",
+		VAPE_COMPONENT_SLOT_CAPACITOR = "capacitor",
+		VAPE_COMPONENT_SLOT_ADDON = "addon",
+	)
+	return labels[slot] || slot
+
+/datum/vape_component
+	/// Player-facing name for the component.
+	var/component_name = "component"
+	/// Descriptive text summarising what the component does.
+	var/component_desc = ""
+	/// Which slot this component fits into.
+	var/component_slot = VAPE_COMPONENT_SLOT_COIL
+	/// Item type we should recreate if this datum is removed.
+	var/component_item_path
+	/// Multiplier applied to drag time.
+	var/dragtime_multiplier = 1
+	/// Additional reagent capacity contributed by this component.
+	var/capacity_bonus = 0
+	/// Additional smoke radius provided by this component.
+	var/smoke_range_bonus = 0
+	/// Additional smoke amount passed to the smoke machine effect.
+	var/smoke_amount_bonus = 0
+	/// Efficiency modifier (lower values expend more reagents per puff).
+	var/efficiency_bonus = 0
+	/// Bitflags for special behaviour.
+	var/special_flags = 0
+	/// Additional heat stacks applied to the user on each puff.
+	var/heat_bonus = 0
+
+/datum/vape_component/proc/clone_component()
+	var/datum/vape_component/new_component = new src.type
+	new_component.component_item_path = component_item_path
+	return new_component
+
+/obj/item/vape_component
+	name = "vape component"
+	icon = 'icons/obj/devices/stock_parts.dmi'
+	icon_state = "micro_laser"
+	w_class = WEIGHT_CLASS_TINY
+	var/component_path = /datum/vape_component
+	var/datum/vape_component/blueprint
+
+/obj/item/vape_component/Initialize(mapload)
+	. = ..()
+	if(!blueprint)
+		blueprint = new component_path
+	blueprint.component_item_path = type
+	if(blueprint.component_name)
+		name = capitalize(blueprint.component_name)
+	if(blueprint.component_desc)
+		desc = blueprint.component_desc
+	return .
+
+/obj/item/vape_component/proc/build_component()
+	if(!blueprint)
+		return null
+	return blueprint.clone_component()
+
+/obj/item/vape_component/examine(mob/user)
+	. = ..()
+	if(blueprint)
+		. += span_info("Installs in the [vape_get_slot_label(blueprint.component_slot)] slot.")
+	return .
+
+/obj/item/vape_component/coil
+	component_path = /datum/vape_component/coil
+	icon_state = "micro_laser"
+
+/obj/item/vape_component/coil/nichrome
+	name = "nichrome coil cartridge"
+	component_path = /datum/vape_component/coil/nichrome
+
+/obj/item/vape_component/coil/bluespace
+	name = "bluespace vortex coil"
+	component_path = /datum/vape_component/coil/bluespace
+	icon_state = "quadultra_micro_laser"
+
+/obj/item/vape_component/capacitor
+	component_path = /datum/vape_component/capacitor
+	icon_state = "capacitor"
+
+/obj/item/vape_component/capacitor/starter
+	name = "starter capacitor bank"
+	component_path = /datum/vape_component/capacitor/starter
+
+/obj/item/vape_component/capacitor/bluespace
+	name = "bluespace capacitor lattice"
+	component_path = /datum/vape_component/capacitor/bluespace
+	icon_state = "quadratic_capacitor"
+
+/obj/item/vape_component/addon
+	component_path = /datum/vape_component/addon
+	icon_state = "micro_servo"
+
+/obj/item/vape_component/addon/afterburner
+	name = "afterburner manifold"
+	component_path = /datum/vape_component/addon/afterburner
+	icon_state = "hyperwave_filter"
+
+/obj/item/vape_component/addon/turbofan
+	name = "turbofan diffuser"
+	component_path = /datum/vape_component/addon/turbofan
+	icon_state = "subspace_ansible"
+
+/obj/item/vape_component/addon/quantum
+	name = "quantum condensate loop"
+	component_path = /datum/vape_component/addon/quantum
+	icon_state = "adv_scan_module"
+
+/datum/vape_component/coil
+	component_slot = VAPE_COMPONENT_SLOT_COIL
+
+/datum/vape_component/coil/nichrome
+	component_name = "nichrome coil"
+	component_desc = "A dependable notch coil that trims drag time while keeping clouds controlled."
+	dragtime_multiplier = 0.85
+	smoke_range_bonus = 1
+	smoke_amount_bonus = 14
+
+/datum/vape_component/coil/bluespace
+	component_name = "bluespace vortex coil"
+	component_desc = "An indulgent coil that folds vapor through bluespace microcurrents, widening the cloud dramatically."
+	dragtime_multiplier = 0.7
+	smoke_range_bonus = 2
+	smoke_amount_bonus = 22
+	efficiency_bonus = 6
+
+/datum/vape_component/capacitor
+	component_slot = VAPE_COMPONENT_SLOT_CAPACITOR
+
+/datum/vape_component/capacitor/starter
+	component_name = "starter capacitor bank"
+	component_desc = "Compact buffering that adds a modest reservoir to the chassis."
+	capacity_bonus = 40
+
+/datum/vape_component/capacitor/bluespace
+	component_name = "bluespace capacitor lattice"
+	component_desc = "Paired bluespace wells that massively extend reservoir endurance."
+	capacity_bonus = 120
+	dragtime_multiplier = 0.95
+	efficiency_bonus = 4
+
+/datum/vape_component/addon
+	component_slot = VAPE_COMPONENT_SLOT_ADDON
+
+/datum/vape_component/addon/afterburner
+	component_name = "afterburner manifold"
+	component_desc = "Injects a plasma microburst into each draw, dramatically heating the plume."
+	special_flags = VAPE_SPECIAL_AFTERBURNER
+	heat_bonus = 1
+	smoke_amount_bonus = 6
+
+/datum/vape_component/addon/turbofan
+	component_name = "turbofan diffuser"
+	component_desc = "A ring of microthrusters that fans vapor across the room at the cost of efficiency."
+	special_flags = VAPE_SPECIAL_TURBOFAN
+	smoke_range_bonus = 2
+	efficiency_bonus = -6
+
+/datum/vape_component/addon/quantum
+	component_name = "quantum condensate loop"
+	component_desc = "Recaptures condensed reagents, stretching draw lengths for meticulous experiments."
+	capacity_bonus = 30
+	dragtime_multiplier = 1.1
+	efficiency_bonus = 8
+
+/obj/item/vape/frame
+	parent_type = /obj/item
+	name = "modular vape chassis"
+	desc = "A bare-bones chassis waiting for coils, capacitors, and wild addons."
+	icon = 'icons/map_icons/items/_item.dmi'
+	icon_state = "/obj/item/vape"
+	post_init_icon_state = "vapeopen_low"
+	greyscale_config = /datum/greyscale_config/vape/open_low
+	greyscale_colors = "#515151"
+	w_class = WEIGHT_CLASS_SMALL
+	var/list/component_slots = list(
+		VAPE_COMPONENT_SLOT_COIL = null,
+		VAPE_COMPONENT_SLOT_CAPACITOR = null,
+		VAPE_COMPONENT_SLOT_ADDON = null,
+	)
+	var/list/install_sequence = list()
+
+/obj/item/vape/frame/examine(mob/user)
+	. = ..()
+	var/list/status = list()
+	for(var/slot in component_slots)
+		var/datum/vape_component/component = component_slots[slot]
+		status += "[capitalize(vape_get_slot_label(slot))]: [component ? component.component_name : "empty"]"
+	if(length(status))
+		. += span_info("Slots -- [jointext(status, ", ")]")
+	return .
+
+/obj/item/vape/frame/attackby(obj/item/I, mob/user, params)
+	if(istype(I, /obj/item/vape_component))
+		if(install_component(I, user))
+			return TRUE
+	if(I?.tool_behaviour == TOOL_CROWBAR)
+		if(eject_last_component(user))
+			return TRUE
+	return ..()
+
+/obj/item/vape/frame/proc/install_component(obj/item/vape_component/part, mob/user)
+	var/datum/vape_component/component = part.build_component()
+	if(!component)
+		return FALSE
+	var/slot = component.component_slot
+	if(component_slots[slot])
+		to_chat(user, span_warning("The [vape_get_slot_label(slot)] slot already houses a component."))
+		return TRUE
+	component.component_item_path = part.type
+	component_slots[slot] = component
+	install_sequence += slot
+	to_chat(user, span_notice("You secure [part] into the [vape_get_slot_label(slot)] bay."))
+	qdel(part)
+	return TRUE
+
+/obj/item/vape/frame/proc/eject_last_component(mob/user)
+	if(!length(install_sequence))
+		to_chat(user, span_warning("There are no components left to remove."))
+		return TRUE
+	var/slot = install_sequence[length(install_sequence)]
+	install_sequence.Cut(length(install_sequence))
+	var/datum/vape_component/component = component_slots[slot]
+	component_slots[slot] = null
+	if(!component)
+		return TRUE
+	var/type_to_spawn = component.component_item_path
+	if(type_to_spawn)
+		var/obj/item/returned = new type_to_spawn(get_turf(user || src))
+		if(user && returned)
+			user.put_in_hands(returned)
+	to_chat(user, span_notice("You pry the [vape_get_slot_label(slot)] module free."))
+	return TRUE
+
+/obj/item/vape/frame/attack_self(mob/user)
+	if(!component_slots[VAPE_COMPONENT_SLOT_COIL] || !component_slots[VAPE_COMPONENT_SLOT_CAPACITOR])
+		to_chat(user, span_warning("You still need to slot in a coil and capacitor."))
+		return
+	var/obj/item/vape/modular/new_vape = new(get_turf(src))
+	new_vape.assemble_from_components(component_slots)
+	to_chat(user, span_notice("You lock the chassis closed, completing the modular vape."))
+	if(user)
+		user.put_in_hands(new_vape)
+	qdel(src)
+
+/obj/item/vape/frame/Destroy()
+	for(var/slot in component_slots)
+		var/datum/vape_component/component = component_slots[slot]
+		if(!component)
+			continue
+		component_slots[slot] = null
+		var/type_to_spawn = component.component_item_path
+		if(type_to_spawn)
+			new type_to_spawn(get_turf(src))
+	return ..()
+
+/obj/item/vape/modular
+	name = "modular vape"
+	desc = "A research vape chassis tuned for interchangeable components and questionable science."
+	greyscale_colors = "#3f48e2"
+	chem_volume = 80
+	dragtime = 6 SECONDS
+	var/list/component_slots = list(
+		VAPE_COMPONENT_SLOT_COIL = null,
+		VAPE_COMPONENT_SLOT_CAPACITOR = null,
+		VAPE_COMPONENT_SLOT_ADDON = null,
+	)
+	var/component_special_flags = 0
+	var/component_smoke_range = 0
+	var/component_smoke_amount = 12
+	var/component_efficiency = 24
+	var/component_heat_bonus = 0
+
+/obj/item/vape/modular/Initialize(mapload)
+	component_slots = list(
+		VAPE_COMPONENT_SLOT_COIL = null,
+		VAPE_COMPONENT_SLOT_CAPACITOR = null,
+		VAPE_COMPONENT_SLOT_ADDON = null,
+	)
+	. = ..()
+	reagents.clear_reagents()
+	reagents.flags |= NO_REACT
+	recalculate_profile()
+	return .
+
+/obj/item/vape/modular/examine(mob/user)
+	. = ..()
+	var/list/status = list()
+	for(var/slot in component_slots)
+		var/datum/vape_component/component = component_slots[slot]
+		status += "[capitalize(vape_get_slot_label(slot))]: [component ? component.component_name : "empty"]"
+	if(length(status))
+		. += span_info("Modules -- [jointext(status, "; ")]")
+	. += span_notice("Drag time: [round(dragtime / (1 SECONDS), 0.1)]s  Reservoir: [chem_volume]u")
+	if(component_smoke_range)
+		. += span_notice("Cloud reach: [component_smoke_range]-tile radius")
+	else
+		. += span_notice("Cloud reach: direct inhale only")
+	return .
+
+/obj/item/vape/modular/Destroy()
+	for(var/slot in component_slots)
+		drop_component(slot, null, quiet = TRUE)
+	return ..()
+
+/obj/item/vape/modular/attackby(obj/item/I, mob/user, params)
+	if(istype(I, /obj/item/vape_component))
+		if(install_component(I, user))
+			return TRUE
+	if(I?.tool_behaviour == TOOL_CROWBAR)
+		if(prompt_component_removal(user))
+			return TRUE
+	return ..()
+
+/obj/item/vape/modular/proc/install_component(obj/item/vape_component/part, mob/user)
+	if(!screw)
+		to_chat(user, span_warning("Pop the maintenance hatch first."))
+		return TRUE
+	var/datum/vape_component/component = part.build_component()
+	if(!component)
+		return TRUE
+	var/slot = component.component_slot
+	if(component_slots[slot])
+		drop_component(slot, user)
+	component.component_item_path = part.type
+	component_slots[slot] = component
+	to_chat(user, span_notice("You seat [part] inside the [vape_get_slot_label(slot)] mount."))
+	qdel(part)
+	recalculate_profile()
+	return TRUE
+
+/obj/item/vape/modular/proc/drop_component(slot, mob/user, quiet = FALSE)
+	var/datum/vape_component/component = component_slots[slot]
+	if(!component)
+		return
+	component_slots[slot] = null
+	var/type_to_spawn = component.component_item_path
+	if(type_to_spawn)
+		var/obj/item/vape_component/spawned = new type_to_spawn(get_turf(user || src))
+		if(user && spawned)
+			user.put_in_hands(spawned)
+	if(user && !quiet)
+		to_chat(user, span_notice("You remove the [vape_get_slot_label(slot)] module."))
+
+/obj/item/vape/modular/proc/prompt_component_removal(mob/user)
+	if(!screw)
+		to_chat(user, span_warning("Open the access hatch first."))
+		return TRUE
+	var/list/options = list()
+	for(var/slot in component_slots)
+		var/datum/vape_component/component = component_slots[slot]
+		if(!component)
+			continue
+		options["[capitalize(vape_get_slot_label(slot))]: [component.component_name]"] = slot
+	if(!length(options))
+		to_chat(user, span_warning("There are no components to remove."))
+		return TRUE
+	var/choice = tgui_input_list(user, "Select a module to eject.", "Modular Vape", options)
+	if(isnull(choice) || QDELETED(src))
+		return TRUE
+	var/slot = options[choice]
+	drop_component(slot, user)
+	recalculate_profile()
+	return TRUE
+
+/obj/item/vape/modular/proc/assemble_from_components(list/components)
+	for(var/slot in component_slots)
+		component_slots[slot] = null
+	for(var/slot in components)
+		var/datum/vape_component/component = components[slot]
+		if(!component)
+			continue
+		component_slots[slot] = component.clone_component()
+	recalculate_profile()
+
+/obj/item/vape/modular/proc/recalculate_profile()
+	var/base_dragtime = initial(dragtime)
+	var/base_volume = initial(chem_volume)
+	var/range = 0
+	var/amount = 12
+	var/efficiency = 24
+	component_special_flags = 0
+	component_heat_bonus = 0
+	for(var/slot in component_slots)
+		var/datum/vape_component/component = component_slots[slot]
+		if(!component)
+			continue
+		base_dragtime *= component.dragtime_multiplier
+		base_volume += component.capacity_bonus
+		range += component.smoke_range_bonus
+		amount += component.smoke_amount_bonus
+		efficiency += component.efficiency_bonus
+		component_special_flags |= component.special_flags
+		component_heat_bonus += component.heat_bonus
+	dragtime = max(2 SECONDS, round(base_dragtime, 0.1))
+	chem_volume = clamp(base_volume, 40, 250)
+	component_smoke_range = max(0, range)
+	component_smoke_amount = max(4, amount)
+	component_efficiency = max(6, efficiency)
+	if(reagents)
+		reagents.maximum_volume = chem_volume
+
+/obj/item/vape/modular/handle_reagents()
+	..()
+	if(component_heat_bonus)
+		var/mob/living/carbon/vaper = loc
+		if(iscarbon(vaper) && src == vaper.wear_mask)
+			vaper.adjust_fire_stacks(component_heat_bonus)
+
+/obj/item/vape/modular/process(seconds_per_tick)
+	var/mob/living/M = loc
+	if(isliving(loc))
+		M.ignite_mob()
+	if(!reagents.total_volume)
+		if(ismob(loc))
+			to_chat(M, span_warning("[src] is empty!"))
+			STOP_PROCESSING(SSobj, src)
+		return
+	if(!COOLDOWN_FINISHED(src, drag_cooldown))
+		return
+	COOLDOWN_START(src, drag_cooldown, dragtime)
+	if(obj_flags & EMAGGED)
+		var/datum/effect_system/fluid_spread/smoke/chem/smoke_machine/puff = new
+		puff.set_up(4, holder = src, location = loc, carry = reagents, efficiency = 24)
+		puff.start()
+		if(prob(5))
+			playsound(get_turf(src), 'sound/effects/pop_expl.ogg', 50, FALSE)
+			M.apply_damage(20, BURN, BODY_ZONE_HEAD)
+			M.Paralyze(300)
+			var/datum/effect_system/spark_spread/sp = new /datum/effect_system/spark_spread
+			sp.set_up(5, 1, src)
+			sp.start()
+			to_chat(M, span_userdanger("[src] suddenly explodes in your mouth!"))
+			qdel(src)
+			return
+	else
+		var/range = component_smoke_range + (super ? 1 : 0)
+		if(range > 0)
+			var/datum/effect_system/fluid_spread/smoke/chem/smoke_machine/puff = new
+			var/efficiency = max(6, component_efficiency)
+			if(super)
+				efficiency += 4
+			puff.set_up(range, holder = src, location = loc, carry = reagents, efficiency = efficiency)
+			puff.amount = max(puff.amount, component_smoke_amount)
+			puff.start()
+			if(component_special_flags & VAPE_SPECIAL_AFTERBURNER)
+				if(prob(10))
+					var/datum/effect_system/spark_spread/sp = new /datum/effect_system/spark_spread
+					sp.set_up(3, 1, src)
+					sp.start()
+			if(component_special_flags & VAPE_SPECIAL_TURBOFAN)
+				playsound(get_turf(src), 'sound/items/weapons/fwoosh.ogg', 20, FALSE)
+	handle_reagents()
+
+#undef VAPE_COMPONENT_SLOT_COIL
+#undef VAPE_COMPONENT_SLOT_CAPACITOR
+#undef VAPE_COMPONENT_SLOT_ADDON
+#undef VAPE_SPECIAL_AFTERBURNER
+#undef VAPE_SPECIAL_TURBOFAN

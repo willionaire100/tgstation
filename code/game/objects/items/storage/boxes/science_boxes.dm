@@ -95,6 +95,17 @@
 		)
 	generate_items_inside(items_inside,src)
 
+/obj/item/storage/box/vape_kit
+	name = "vape prototyping kit"
+	desc = "A curated bundle of frames and components for building modular vaporizers."
+	illustration = "tech"
+
+/obj/item/storage/box/vape_kit/PopulateContents()
+	new /obj/item/vape/frame(src)
+	new /obj/item/vape_component/coil/nichrome(src)
+	new /obj/item/vape_component/capacitor/starter(src)
+	new /obj/item/vape_component/addon/afterburner(src)
+
 /obj/item/storage/box/rndboards
 	name = "\proper the liberator's legacy"
 	desc = "A box containing a gift for worthy golems."

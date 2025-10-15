@@ -172,6 +172,7 @@ GLOBAL_DATUM_INIT(steal_item_handler, /datum/objective_item_handler, new())
 		JOB_RESEARCH_DIRECTOR,
 		JOB_SCIENTIST,
 		JOB_ROBOTICIST,
+		JOB_GEEKER,
 	)
 	item_owner = list(JOB_ROBOTICIST)
 	exists_on_map = TRUE
@@ -521,8 +522,8 @@ GLOBAL_DATUM_INIT(steal_item_handler, /datum/objective_item_handler, new())
 /datum/objective_item/steal/hdd_extraction
 	name = "the source code for Project Goon from the master R&D server mainframe"
 	targetitem = /obj/item/computer_disk/hdd_theft
-	excludefromjob = list(JOB_RESEARCH_DIRECTOR, JOB_SCIENTIST, JOB_ROBOTICIST, JOB_GENETICIST)
-	item_owner = list(JOB_RESEARCH_DIRECTOR, JOB_SCIENTIST)
+	excludefromjob = list(JOB_RESEARCH_DIRECTOR, JOB_SCIENTIST, JOB_ROBOTICIST, JOB_GEEKER, JOB_GENETICIST)
+	item_owner = list(JOB_RESEARCH_DIRECTOR, JOB_SCIENTIST, JOB_GEEKER)
 	exists_on_map = TRUE
 	difficulty = 4
 	steal_hint = "The hard drive of the master research server, found in R&D's server room."
@@ -692,6 +693,7 @@ GLOBAL_DATUM_INIT(steal_item_handler, /datum/objective_item_handler, new())
 		JOB_CHIEF_ENGINEER,
 		JOB_SCIENTIST,
 		JOB_RESEARCH_DIRECTOR,
+		JOB_GEEKER,
 		JOB_GENETICIST,
 		JOB_ROBOTICIST,
 	)

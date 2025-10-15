@@ -119,4 +119,6 @@
 #define TECHWEB_NODE_TACKLE_ADVANCED "tackle_advanced"
 #define TECHWEB_NODE_TELECOMS "telecoms"
 #define TECHWEB_NODE_UNREGULATED_BLUESPACE "unregulated_bluespace"
+#define TECHWEB_NODE_VAPORWORKS "vaporworks"
+#define TECHWEB_NODE_VAPORWORKS_EXOTIC "vaporworks_exotic"
 #define TECHWEB_NODE_XENOBIOLOGY "xenobiology"

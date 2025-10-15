@@ -101,3 +101,31 @@
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_5_POINTS)
 	discount_experiments = list(/datum/experiment/scanning/points/anomalies = TECHWEB_TIER_5_POINTS)
 	announce_channels = list(RADIO_CHANNEL_SCIENCE)
+
+/datum/techweb_node/vaporworks
+	id = TECHWEB_NODE_VAPORWORKS
+	display_name = "Vaporworks Fundamentals"
+	description = "Establishes modular vape fabrication, opening the door to reagent-rich vapor research."
+	prereq_ids = list(TECHWEB_NODE_FUNDIMENTAL_SCI, TECHWEB_NODE_CHEM_SYNTHESIS)
+	design_ids = list(
+		"vape_chassis_modular",
+		"vape_coil_nichrome",
+		"vape_capacitor_starter",
+		"vape_addon_afterburner",
+		"vape_addon_turbofan",
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_2_POINTS)
+	announce_channels = list(RADIO_CHANNEL_SCIENCE)
+
+/datum/techweb_node/vaporworks_exotic
+	id = TECHWEB_NODE_VAPORWORKS_EXOTIC
+	display_name = "Exotic Vaporworks"
+	description = "Applies bluespace theory to vaporworks hardware for extravagant cloud control."
+	prereq_ids = list(TECHWEB_NODE_VAPORWORKS, TECHWEB_NODE_APPLIED_BLUESPACE)
+	design_ids = list(
+		"vape_coil_bluespace",
+		"vape_capacitor_bluespace",
+		"vape_addon_quantum",
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_3_POINTS)
+	announce_channels = list(RADIO_CHANNEL_SCIENCE)

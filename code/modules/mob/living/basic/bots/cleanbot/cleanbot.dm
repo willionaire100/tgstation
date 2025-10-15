@@ -63,6 +63,7 @@
 		JOB_RESEARCH_DIRECTOR = "Ph.D.",
 		JOB_ROBOTICIST = "M.S.",
 		JOB_SCIENTIST = "B.S.",
+		JOB_GEEKER = "V.T.",
 		JOB_GENETICIST = "Gene B.S.",
 	)
 	///which job titles should be placed after the name?
@@ -70,6 +71,7 @@
 		JOB_GENETICIST,
 		JOB_ROBOTICIST,
 		JOB_SCIENTIST,
+		JOB_GEEKER,
 	)
 	///decals we can clean
 	var/static/list/cleanable_decals = typecacheof(list(

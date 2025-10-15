@@ -1088,6 +1088,36 @@
 	honorifics = list("Researcher")
 	honorific_positions = HONORIFIC_POSITION_FIRST | HONORIFIC_POSITION_LAST | HONORIFIC_POSITION_FIRST_FULL | HONORIFIC_POSITION_NONE
 
+/datum/id_trim/job/geeker
+	assignment = JOB_GEEKER
+	trim_state = "trim_scientist"
+	department_color = COLOR_SCIENCE_PINK
+	subdepartment_color = COLOR_SCIENCE_PINK
+	sechud_icon_state = SECHUD_SCIENTIST
+	minimal_access = list(
+		ACCESS_AUX_BASE,
+		ACCESS_MECH_SCIENCE,
+		ACCESS_MINERAL_STOREROOM,
+		ACCESS_ORDNANCE,
+		ACCESS_ORDNANCE_STORAGE,
+		ACCESS_RESEARCH,
+		ACCESS_SCIENCE,
+		ACCESS_TECH_STORAGE,
+	)
+	extra_access = list(
+		ACCESS_XENOBIOLOGY,
+		ACCESS_ROBOTICS,
+		ACCESS_GENETICS,
+	)
+	template_access = list(
+		ACCESS_CAPTAIN,
+		ACCESS_CHANGE_IDS,
+		ACCESS_RD,
+	)
+	job = /datum/job/geeker
+	honorifics = list("Technologist")
+	honorific_positions = HONORIFIC_POSITION_FIRST | HONORIFIC_POSITION_LAST | HONORIFIC_POSITION_FIRST_FULL | HONORIFIC_POSITION_NONE
+
 /// Sec officers have departmental variants. They each have their own trims with bonus departmental accesses.
 /datum/id_trim/job/security_officer
 	assignment = JOB_SECURITY_OFFICER

@@ -1058,6 +1058,132 @@
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_SERVICE | DEPARTMENT_BITFLAG_CARGO | DEPARTMENT_BITFLAG_SCIENCE
 
+/datum/design/vape_chassis
+	name = "Modular Vape Chassis"
+	desc = "A configurable chassis ready for advanced coil and capacitor installs."
+	id = "vape_chassis_modular"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/iron = SHEET_MATERIAL_AMOUNT,
+		/datum/material/glass = SMALL_MATERIAL_AMOUNT * 6,
+		/datum/material/plastic = SMALL_MATERIAL_AMOUNT * 4,
+	)
+	build_path = /obj/item/vape/frame
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_coil_nichrome
+	name = "Nichrome Coil Cartridge"
+	desc = "A reliable coil module tuned for research-grade vapor experiments."
+	id = "vape_coil_nichrome"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5,
+		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 3,
+	)
+	build_path = /obj/item/vape_component/coil/nichrome
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_capacitor_starter
+	name = "Starter Capacitor Bank"
+	desc = "Baseline capacitor array sized for modular vape frames."
+	id = "vape_capacitor_starter"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4,
+		/datum/material/glass = SMALL_MATERIAL_AMOUNT * 4,
+		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 2,
+	)
+	build_path = /obj/item/vape_component/capacitor/starter
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_addon_afterburner
+	name = "Afterburner Manifold"
+	desc = "Injects a plasma microburst into every draw for hotter cloud studies."
+	id = "vape_addon_afterburner"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/plasma = SMALL_MATERIAL_AMOUNT * 5,
+		/datum/material/glass = SMALL_MATERIAL_AMOUNT * 2,
+	)
+	build_path = /obj/item/vape_component/addon/afterburner
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_addon_turbofan
+	name = "Turbofan Diffuser"
+	desc = "Microthruster ring that spreads vapor clouds across the lab."
+	id = "vape_addon_turbofan"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4,
+		/datum/material/titanium = SMALL_MATERIAL_AMOUNT * 3,
+		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 2,
+	)
+	build_path = /obj/item/vape_component/addon/turbofan
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_coil_bluespace
+	name = "Bluespace Vortex Coil"
+	desc = "Exotic coil cartridge that folds vapor through bluespace currents."
+	id = "vape_coil_bluespace"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/bluespace = SMALL_MATERIAL_AMOUNT * 6,
+		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 3,
+		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 3,
+	)
+	build_path = /obj/item/vape_component/coil/bluespace
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_capacitor_bluespace
+	name = "Bluespace Capacitor Lattice"
+	desc = "Paired bluespace wells tuned for long-form vaporization trials."
+	id = "vape_capacitor_bluespace"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/bluespace = SMALL_MATERIAL_AMOUNT * 6,
+		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 4,
+		/datum/material/uranium = SMALL_MATERIAL_AMOUNT * 2,
+	)
+	build_path = /obj/item/vape_component/capacitor/bluespace
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vape_addon_quantum
+	name = "Quantum Condensate Loop"
+	desc = "Reclaims condensed reagents to stretch experimental draw times."
+	id = "vape_addon_quantum"
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/bluespace = SMALL_MATERIAL_AMOUNT * 5,
+		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 3,
+		/datum/material/uranium = SMALL_MATERIAL_AMOUNT * 3,
+	)
+	build_path = /obj/item/vape_component/addon/quantum
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_SCIENCE,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
 // Coffeemaker Stuff
 
 /datum/design/coffeepot
