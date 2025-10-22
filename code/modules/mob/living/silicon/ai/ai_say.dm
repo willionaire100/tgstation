@@ -20,7 +20,18 @@
 		to_chat(src, span_danger("The ability for AIs to speak is currently disabled via server config."))
 		return FALSE
 
-	return ..()
+	var/can_speak = ..()
+	if(can_speak)
+		var/list/event_payload = list(
+			"direction" = "outbound",
+			"channel" = "local",
+			"message" = message,
+			"forced" = forced ? TRUE : FALSE,
+			"ignore_spam" = ignore_spam ? TRUE : FALSE,
+			"filterproof" = filterproof ? TRUE : FALSE,
+		)
+		emit_control_event(AI_CONTROL_EVENT_SPEECH, event_payload)
+	return can_speak
 
 /mob/living/silicon/ai/radio(message, list/message_mods = list(), list/spans, language)
 	if(incapacitated)
@@ -34,10 +45,37 @@
 	if(message_mods[MODE_HEADSET])
 		if(radio)
 			radio.talk_into(src, message, , spans, language, message_mods)
+			var/list/spans_copy = null
+			if(islist(spans))
+				spans_copy = spans.Copy()
+			var/list/mods_copy = message_mods.Copy()
+			var/list/event_payload = list(
+				"direction" = "outbound",
+				"mode" = "headset",
+				"message" = message,
+				"language" = language,
+				"spans" = spans_copy,
+				"modifiers" = mods_copy,
+			)
+			emit_control_event(AI_CONTROL_EVENT_RADIO, event_payload)
 		return NOPASS
 	else if(message_mods[RADIO_EXTENSION] in GLOB.default_radio_channels)
 		if(radio)
 			radio.talk_into(src, message, message_mods[RADIO_EXTENSION], spans, language, message_mods)
+			var/list/spans_copy = null
+			if(islist(spans))
+				spans_copy = spans.Copy()
+			var/list/mods_copy = message_mods.Copy()
+			var/list/event_payload = list(
+				"direction" = "outbound",
+				"mode" = "channel",
+				"channel" = message_mods[RADIO_EXTENSION],
+				"message" = message,
+				"language" = language,
+				"spans" = spans_copy,
+				"modifiers" = mods_copy,
+			)
+			emit_control_event(AI_CONTROL_EVENT_RADIO, event_payload)
 			return NOPASS
 	return FALSE
 
@@ -60,6 +98,20 @@
 
 	log_sayverb_talk(message, message_mods, tag = "HOLOPAD in [pad_loc]")
 	ai_holo.say(message, spans = spans, sanitize = FALSE, language = language, message_mods = message_mods)
+	var/list/spans_copy = null
+	if(islist(spans))
+		spans_copy = spans.Copy()
+	var/list/mods_copy = message_mods.Copy()
+	var/list/event_payload = list(
+		"direction" = "outbound",
+		"mode" = "holopad",
+		"message" = message,
+		"language" = language,
+		"location" = pad_loc,
+		"spans" = spans_copy,
+		"modifiers" = mods_copy,
+	)
+	emit_control_event(AI_CONTROL_EVENT_HOLOPAD, event_payload)
 
 
 // Make sure that the code compiles with AI_VOX undefined

@@ -106,6 +106,11 @@
 				continue
 			to_chat(McMobby,span_binarysay("<span class=[SPAN_COMMAND]>\[ SYSTEM \] NEW REMOTE HOST HAS CONNECTED TO THIS CHANNEL -- ID: [src]</span>"), type = MESSAGE_TYPE_RADIO)
 
+	QDEL_NULL(control_link)
+	control_link = new(src)
+	if(control_link)
+		control_link.on_ai_initialized()
+
 /mob/living/silicon/ai/weak_syndie
 	radio = /obj/item/radio/headset/silicon/ai/evil
 	radio_enabled = TRUE
@@ -147,6 +152,9 @@
 	QDEL_NULL(aiMulti)
 	QDEL_NULL(alert_control)
 	QDEL_NULL(ai_tracking_tool)
+	if(control_link)
+		control_link.on_ai_destroyed()
+	QDEL_NULL(control_link)
 	malfhack = null
 	current = null
 	bot_ref = null
@@ -840,6 +848,78 @@
 	if (client?.prefs.read_preference(/datum/preference/toggle/enable_runechat) && (client.prefs.read_preference(/datum/preference/toggle/enable_runechat_non_mobs) || ismob(speaker)))
 		create_chat_message(speaker, message_language, raw_message, spans)
 	show_message(rendered, 2)
+
+	var/list/spans_copy = null
+	if(islist(spans))
+		spans_copy = spans.Copy()
+	var/list/modifiers_copy = null
+	if(islist(message_mods))
+		modifiers_copy = message_mods.Copy()
+	var/list/event_payload = list(
+		"direction" = "inbound",
+		"raw_message" = raw_message,
+		"translated_message" = raw_translation,
+		"formatted" = rendered,
+		"speaker_ref" = speaker ? REF(speaker) : null,
+		"source_ref" = source ? REF(source) : null,
+		"speaker_display_name" = namepart,
+		"speaker_job" = jobpart,
+		"radio_frequency" = radio_freq,
+		"spans" = spans_copy,
+		"modifiers" = modifiers_copy,
+	)
+	emit_control_event(AI_CONTROL_EVENT_SPEECH, event_payload)
+
+/mob/living/silicon/ai/proc/emit_control_event(event_type, list/payload)
+	if(!control_link || !event_type)
+		return
+	control_link.emit_event(event_type, payload)
+
+/mob/living/silicon/ai/proc/get_control_mode()
+	if(!control_link)
+		return AI_CONTROL_MODE_PLAYER
+	return control_link.control_mode
+
+/mob/living/silicon/ai/proc/get_available_control_modes()
+	if(!control_link)
+		return list()
+	var/list/modes = list()
+	for(var/mode in control_link.get_modes())
+		if(mode == AI_CONTROL_MODE_LLM && (!SSai_llm || !SSai_llm.is_enabled()))
+			continue
+		modes += mode
+	return modes
+
+/mob/living/silicon/ai/proc/set_control_mode(new_mode)
+	if(!control_link)
+		return FALSE
+	return control_link.switch_to_mode(new_mode)
+
+/mob/living/silicon/ai/proc/admin_configure_control_mode()
+	set name = "Configure AI Control Mode"
+	set desc = "Select which driver manages this AI."
+	set category = "Admin"
+
+	if(!check_rights(R_ADMIN))
+		return
+
+	var/list/modes = get_available_control_modes()
+	if(!length(modes))
+		to_chat(usr, span_warning("This AI has no available control modes to select."))
+		return
+
+	var/current_mode = get_control_mode()
+	var/choice = input(usr, "Select the control mode for [name].", "AI Control Mode", current_mode) in modes
+	if(isnull(choice))
+		return
+	if(choice == current_mode)
+		to_chat(usr, span_notice("Control mode remains [current_mode]."))
+		return
+
+	if(set_control_mode(choice))
+		to_chat(usr, span_notice("Control mode updated to [choice]."))
+	else
+		to_chat(usr, span_warning("Failed to update the AI control mode."))
 
 /mob/living/silicon/ai/fully_replace_character_name(oldname,newname)
 	..()

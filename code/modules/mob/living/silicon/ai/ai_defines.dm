@@ -36,6 +36,10 @@
 	/// If the AI is currently anchored to the ground, used for checks. Distinct from [atom/movable/anchored]
 	var/is_anchored = TRUE
 
+	/* CONTROL INTERFACE */
+	/// Primary interface used to broker between human and automated AI controllers.
+	VAR_FINAL/datum/ai_control_link/control_link
+
 	/// Raw HTML containing the last page that was loaded from a held-up PDA
 	VAR_FINAL/last_tablet_note_seen = null
 	/// The last attempted VOX announcement. Exists so that failed VOXes can be retried easily

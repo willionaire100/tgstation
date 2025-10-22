@@ -44,6 +44,16 @@
 
 /datum/config_entry/flag/allow_ai_multicam // allow ai multicamera mode
 
+/datum/config_entry/flag/ai_llm_bridge_enabled
+
+/datum/config_entry/string/ai_llm_bridge_base_url
+
+/datum/config_entry/string/ai_llm_bridge_api_key
+
+/datum/config_entry/number/ai_llm_bridge_timeout
+	default = 5
+	min_val = 1
+
 /datum/config_entry/flag/disable_human_mood
 
 /datum/config_entry/flag/disable_secborg // disallow secborg model to be chosen.
